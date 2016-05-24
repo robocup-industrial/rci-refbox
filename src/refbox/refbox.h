@@ -78,13 +78,16 @@ namespace mongo {
 }
 #endif
 
+namespace fawkes {
+  class MultiLogger;
+}
+
 namespace llsfrb {
 #if 0 /* just to make Emacs auto-indent happy */
 }
 #endif
 
 class Configuration;
-class MultiLogger;
 
 class LLSFRefBox
 {

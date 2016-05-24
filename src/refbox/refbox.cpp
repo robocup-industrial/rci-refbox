@@ -77,6 +77,7 @@ using namespace llsf_sps;
 using namespace protobuf_comm;
 using namespace protobuf_clips;
 using namespace llsf_utils;
+using namespace fawkes;
 
 namespace llsfrb {
 #if 0 /* just to make Emacs auto-indent happy */

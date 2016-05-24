@@ -39,12 +39,16 @@
 
 #include <string>
 
+namespace fawkes {
+  class Logger;
+}
+
+using namespace fawkes;
+
 namespace llsfrb {
 #if 0 /* just to make Emacs auto-indent happy */
 }
 #endif
-
-class Logger;
 
 /// @cond INTERNALS
 

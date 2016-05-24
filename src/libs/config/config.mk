@@ -3,6 +3,7 @@
 #                            -------------------
 #   Created on Tue Jun 21 15:04:39 2007
 #   Copyright (C) 2006-2012 by Tim Niemueller, AllemaniACs RoboCup Team
+#                 2016 Sven Schneider, Tobias Neumann
 #
 #*****************************************************************************
 #
@@ -31,3 +32,7 @@ ifeq ($(HAVE_YAMLCPP),1)
   endif
 endif
 
+ifneq ($(wildcard $(BUILDCONFDIR)/config/net_handler.h),)
+  CFLAGS += -DHAVE_CONFIG_NETWORK_HANDLER
+	HAVE_CONFIG_NETWORK_HANDLER=1
+endif

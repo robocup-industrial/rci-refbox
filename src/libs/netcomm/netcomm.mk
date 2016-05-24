@@ -3,6 +3,7 @@
 #                            -------------------
 #   Created on Tue Nov 07 16:43:45 2006
 #   Copyright (C) 2006 by Tim Niemueller, AllemaniACs RoboCup Team
+#                 2016 Sven Schneider, Tobias Neumann
 #
 #*****************************************************************************
 #
@@ -30,3 +31,7 @@ ifeq ($(HAVE_LIBCRYPTO),1)
   CFLAGS += -DHAVE_LIBCRYPTO
 endif
 
+ifneq ($(wildcard $(BUILDCONFDIR)/netcomm/fawkes/network_manager.h),)
+  CFLAGS += -DHAVE_NETCOMM_FAWKES
+  HAVE_NETCOMM_FAWKES=1
+endif

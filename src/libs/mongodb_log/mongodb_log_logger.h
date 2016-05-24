@@ -35,7 +35,7 @@ namespace mongo {
   class DBClientBase;
 }
 
-class MongoDBLogLogger : public llsfrb::Logger
+class MongoDBLogLogger : public fawkes::Logger
 {
  public:
   MongoDBLogLogger(std::string host_port, std::string collection);

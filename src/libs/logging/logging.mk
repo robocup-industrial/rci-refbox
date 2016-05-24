@@ -3,6 +3,7 @@
 #                            -------------------
 #   Created on Mon Oct 27 16:11:45 2014
 #   Copyright (C) 2006-2011 by Tim Niemueller, AllemaniACs RoboCup Team
+#                 2016 Sven Schneider, Tobias Neumann
 #
 #*****************************************************************************
 #
@@ -30,3 +31,9 @@ endif
 ifeq ($(LOGGING_FD_REDIRECT_GCC_OK)$(LOGGING_HAVE_BOOST_LIBS),11)
   HAVE_LOGGING_FD_REDIRECT=1
 endif
+
+ifneq ($(wildcard $(BUILDCONFDIR)/logging/liblogger.h),)
+  CFLAGS += -DHAVE_LOGGING_LIBLOGGER
+  HAVE_LOGGING_LIBLOGGER=1
+endif
+

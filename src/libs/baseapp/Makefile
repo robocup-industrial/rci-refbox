@@ -3,6 +3,7 @@
 #                            -------------------
 #   Created on Wed May 04 21:20:58 2011
 #   Copyright (C) 2006-2011 by Tim Niemueller, AllemaniACs RoboCup Team
+#                 2016 Sven Schneider, Tobias Neumann
 #
 #*****************************************************************************
 #
@@ -15,11 +16,13 @@
 
 BASEDIR = ../../..
 include $(BASEDIR)/etc/buildsys/config.mk
+include $(BUILDCONFDIR)/config/config.mk
+include $(BUILDCONFDIR)/plugin/plugin.mk
+include $(BUILDCONFDIR)/utils/utils.mk
+include $(BUILDCONFDIR)/netcomm/netcomm.mk
+include $(BUILDCONFDIR)/logging/logging.mk
 ifneq ($(wildcard $(BUILDCONFDIR)/tf/tf.mk),)
   include $(BUILDCONFDIR)/tf/tf.mk
-endif
-ifneq ($(wildcard $(BUILDCONFDIR)/logging/logging.mk),)
-  include $(BUILDCONFDIR)/logging/logging.mk
 endif
 include $(BUILDSYSDIR)/boost.mk
 
@@ -46,23 +49,10 @@ else
   WARN_TARGETS += warning_blackboard
 endif
 
-ifneq ($(wildcard $(SRCDIR)/../netcomm/fawkes/network_manager.h),)
-  CFLAGS += -DHAVE_NETWORK_MANAGER
+ifeq ($(HAVE_NETCOMM_FAWKES),1)
   LIBS_libfawkesbaseapp += fawkesnetcomm
 else
   WARN_TARGETS += warning_netcomm
-endif
-
-ifneq ($(wildcard $(SRCDIR)/../config/net_handler.h),)
-  CFLAGS += -DHAVE_CONFIG_NETWORK_HANDLER
-else
-  WARN_TARGETS += warning_config_net_handler
-endif
-
-ifneq ($(wildcard $(SRCDIR)/../plugin/net/handler.h),)
-  CFLAGS += -DHAVE_PLUGIN_NETWORK_HANDLER
-else
-  WARN_TARGETS += warning_plugin_net_handler
 endif
 
 ifeq ($(HAVE_CPP11)$(HAVE_BOOST_LIBS),11)
@@ -96,10 +86,6 @@ warning_blackboard:
 	$(SILENT)echo -e "$(INDENT_PRINT)--> $(TYELLOW)Building without blackboard support$(TNORMAL) (blackboard not available)"
 warning_netcomm:
 	$(SILENT)echo -e "$(INDENT_PRINT)--> $(TYELLOW)Building without Fawkes network support$(TNORMAL) (netcomm library not available)"
-warning_config_net_handler:
-	$(SILENT)echo -e "$(INDENT_PRINT)--> $(TYELLOW)Building without config network support$(TNORMAL) (config network handler not available)"
-warning_plugin_net_handler:
-	$(SILENT)echo -e "$(INDENT_PRINT)--> $(TYELLOW)Building without plugin network support$(TNORMAL) (plugin network handler not available)"
 endif
 
 include $(BUILDSYSDIR)/base.mk

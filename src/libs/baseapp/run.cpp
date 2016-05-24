@@ -4,6 +4,7 @@
  *
  *  Created: Wed May 04 23:23:23 2011
  *  Copyright  2006-2011  Tim Niemueller [www.niemueller.de]
+ *             2016 Sven Schneider, Tobias Neumann
  *
  ****************************************************************************/
 
@@ -28,25 +29,41 @@
 
 #include <core/threading/thread.h>
 
-#include <blackboard/local.h>
-#include <config/sqlite.h>
+#ifdef HAVE_BLACKBOARD
+#  include <blackboard/local.h>
+#endif
+#ifdef HAVE_SQLITE
+#  include <config/sqlite.h>
+#endif
 #include <config/yaml.h>
-#include <config/net_handler.h>
-#include <utils/ipc/shm.h>
+#ifdef HAVE_CONFIG_NETWORK_HANDLER
+#  include <config/net_handler.h>
+#endif
+#ifdef HAVE_UTILS_IPC_SHM
+#  include <utils/ipc/shm.h>
+#endif
 #include <utils/system/argparser.h>
 #include <logging/multi.h>
 #include <logging/console.h>
-#include <logging/liblogger.h>
+#ifdef HAVE_LOGGING_LIBLOGGER
+#  include <logging/liblogger.h>
+#endif
 #include <logging/factory.h>
 #include <logging/network.h>
 #ifdef HAVE_LOGGING_FD_REDIRECT
 #  include <logging/fd_redirect.h>
 #endif
-#include <utils/time/clock.h>
-#include <utils/time/time.h>
-#include <netcomm/fawkes/network_manager.h>
+#ifdef HAVE_UTILS_TIME
+#  include <utils/time/clock.h>
+#  include <utils/time/time.h>
+#endif
+#ifdef HAVE_NETCOMM_FAWKES
+#  include <netcomm/fawkes/network_manager.h>
+#endif
 #include <plugin/manager.h>
-#include <plugin/net/handler.h>
+#ifdef HAVE_PLUGIN_NETWORK_HANDLER
+#  include <plugin/net/handler.h>
+#endif
 #include <aspect/manager.h>
 #ifdef HAVE_TF
 #  include <tf/transform_listener.h>
@@ -84,7 +101,9 @@ FawkesNetworkManager      * network_manager = NULL;
 ConfigNetworkHandler      * nethandler_config = NULL;
 PluginNetworkHandler      * nethandler_plugin = NULL;
 Clock                     * clock = NULL;
+#ifdef HAVE_UTILS_IPC_SHM
 SharedMemoryRegistry      * shm_registry;
+#endif
 InitOptions               * init_options = NULL;
 tf::Transformer           * tf_transformer = NULL;
 tf::TransformListener     * tf_listener = NULL;
@@ -169,6 +188,7 @@ init(InitOptions options, int & retval)
   // *** setup base thread and shm registry
   Thread::init_main();
 
+#ifdef HAVE_UTILS_IPC_SHM
   shm_registry = NULL;
   struct passwd *uid_pw = getpwuid(getuid());
   if (uid_pw == NULL) {
@@ -186,6 +206,7 @@ init(InitOptions options, int & retval)
   if (! shm_registry) {
     throw Exception("Failed to create shared memory registry");
   }
+#endif
 
   // *** setup logging
   if (options.has_loggers()) {
@@ -200,7 +221,9 @@ init(InitOptions options, int & retval)
   }
 
   logger->set_loglevel(options.log_level());
+#ifdef HAVE_LOGGING_LIBLOGGER
   LibLogger::init(logger);
+#endif
 
   // *** Prepare home dir directory, just in case
   const char *homedir = getenv("HOME");
@@ -218,7 +241,7 @@ init(InitOptions options, int & retval)
   }
 
   // *** setup config
-  
+#ifdef HAVE_SQLITE
   SQLiteConfiguration *sqconfig = NULL;
 
   if (options.config_file() &&
@@ -255,6 +278,7 @@ init(InitOptions options, int & retval)
 		       "config values, no dump?");
     }
   }
+#endif
 
   if (! options.has_loggers()) {
     // Allow configuration override from config
@@ -264,8 +288,10 @@ init(InitOptions options, int & retval)
         MultiLogger *new_logger =
 	  LoggerFactory::multilogger_instance(loggers.c_str(), options.log_level());
         logger = new_logger;
+#ifdef HAVE_LOGGING_LIBLOGGER
         LibLogger::finalize();
         LibLogger::init(new_logger);
+#endif
       } catch (Exception &e) {
         logger->log_warn("FawkesMainThread", "Loggers set in config file, "
 			 "but failed to read, exception follows.");
@@ -360,7 +386,7 @@ init(InitOptions options, int & retval)
 					 "/fawkes/meta_plugins/",
 					 options.plugin_module_flags(),
 					 options.init_plugin_cache());
-#ifdef HAVE_NETWORK_MANAGER
+#ifdef HAVE_NETCOMM_FAWKES
   network_manager    = new FawkesNetworkManager(thread_manager,
 						net_tcp_port,
 						net_service_name.c_str());
@@ -373,16 +399,18 @@ init(InitOptions options, int & retval)
 						network_manager->hub());
   nethandler_plugin->start();
 #  endif
-#endif
 
   network_logger = new NetworkLogger(network_manager->hub(),
 				     logger->loglevel());
   logger->add_logger(network_logger);
+#endif
 
+#ifdef HAVE_UTILS_TIME
   clock = Clock::instance();
   start_time = new Time(clock);
+#endif
 
-#if defined(HAVE_NETWORK_MANAGER) && defined(HAVE_BLACKBOARD)
+#if defined(HAVE_NETCOMM_FAWKES) && defined(HAVE_BLACKBOARD)
   lbb->start_nethandler(network_manager->hub());
 #endif
 
@@ -397,12 +425,22 @@ init(InitOptions options, int & retval)
   aspect_manager->register_default_inifins(blackboard,
 					   thread_manager->aspect_collector(),
 					   config, logger, clock,
+#ifdef HAVE_NETCOMM_FAWKES
 					   network_manager->hub(),
+#else
+					   NULL,
+#endif
 					   main_thread, logger,
 					   thread_manager,
+#ifdef HAVE_NETCOMM_FAWKES
 					   network_manager->nnresolver(),
 					   network_manager->service_publisher(),
 					   network_manager->service_browser(),
+#else
+					   NULL,
+					   NULL,
+					   NULL,
+#endif
 					   plugin_manager, tf_transformer);
 
   retval = 0;
@@ -416,10 +454,12 @@ cleanup()
     fawkes::daemon::cleanup();
   }
 
+#ifdef HAVE_PLUGIN_NETWORK_HANDLER
   if (nethandler_plugin) {
     nethandler_plugin->cancel();
     nethandler_plugin->join();
   }
+#endif
 
   if (logger) {
     // Must delete network logger first since network manager
@@ -443,7 +483,9 @@ cleanup()
   delete network_manager;
   delete thread_manager;
   delete aspect_manager;
+#ifdef HAVE_UTILS_IPC_SHM
   delete shm_registry;
+#endif
 #ifdef HAVE_LOGGING_FD_REDIRECT
   delete log_fd_redirect_stderr_;
   delete log_fd_redirect_stdout_;
@@ -459,7 +501,9 @@ cleanup()
   config = NULL;
   thread_manager = NULL;
   aspect_manager = NULL;
+#ifdef HAVE_UTILS_IPC_SHM
   shm_registry = NULL;
+#endif
   blackboard = NULL;
 #ifdef HAVE_LOGGING_FD_REDIRECT
   log_fd_redirect_stderr_ = NULL;
@@ -467,12 +511,16 @@ cleanup()
 #endif
 
   // implicitly frees multi_logger and all sub-loggers
+#ifdef HAVE_LOGGING_LIBLOGGER
   LibLogger::finalize();
+#endif
   logger = NULL;
 
   delete start_time;
   start_time = NULL;
+#ifdef HAVE_UTILS_TIME
   Clock::finalize();
+#endif
   clock = NULL;
 
   try {

@@ -34,7 +34,7 @@ namespace fawkes {
   class Mutex;
 }
 
-namespace llsfrb {
+namespace fawkes {
 #if 0 /* just to make Emacs auto-indent happy */
 }
 #endif
@@ -123,6 +123,6 @@ class CacheLogger : public Logger
 };
 
 
-} // end namespace llsfrb
+} // end namespace fawkes
 
 #endif

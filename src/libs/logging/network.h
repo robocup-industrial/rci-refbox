@@ -30,7 +30,7 @@ namespace protobuf_comm {
   class ProtobufStreamServer;
 }
 
-namespace llsfrb {
+namespace fawkes {
 
 class NetworkLogger : public Logger
 {
@@ -84,6 +84,6 @@ class NetworkLogger : public Logger
 
 
 
-} // end namespace llsfrb
+} // end namespace fawkes
 
 #endif

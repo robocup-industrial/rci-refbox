@@ -27,7 +27,7 @@
 #include <logging/logger.h>
 #include <logging/logger_employer.h>
 
-namespace llsfrb {
+namespace fawkes {
 
 
 class MultiLoggerData;
@@ -99,6 +99,6 @@ class MultiLoggerData;
 };
 
 
-} // end namespace llsfrb
+} // end namespace fawkes
 
 #endif

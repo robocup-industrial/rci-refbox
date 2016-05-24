@@ -27,7 +27,7 @@
 #include <logging/logger.h>
 #include <ctime>
 
-namespace llsfrb {
+namespace fawkes {
 
 
 class Mutex;
@@ -79,6 +79,6 @@ class ConsoleLogger : public Logger
 };
 
 
-} // end namespace llsfrb
+} // end namespace fawkes
 
 #endif

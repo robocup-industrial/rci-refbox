@@ -30,7 +30,7 @@
 #include <sys/time.h>
 #include <time.h>
 
-namespace llsfrb {
+namespace fawkes {
 
 /// @cond INTERNALS
 class MultiLoggerData
@@ -691,4 +691,4 @@ MultiLogger::vtlog_error(struct timeval *t, const char *component, const char *f
 }
 
 
-} // end namespace llsfrb
+} // end namespace fawkes

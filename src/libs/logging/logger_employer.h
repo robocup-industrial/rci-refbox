@@ -24,7 +24,7 @@
 #ifndef __LOGGING_LOGGER_EMPLOYER_H_
 #define __LOGGING_LOGGER_EMPLOYER_H_
 
-namespace llsfrb {
+namespace fawkes {
 
 class Logger;
 

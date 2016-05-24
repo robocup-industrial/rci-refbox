@@ -31,7 +31,7 @@
 #include <cstdio>
 #include <algorithm>
 
-namespace llsfrb {
+namespace fawkes {
 #if 0 /* just to make Emacs auto-indent happy */
 }
 #endif
@@ -433,4 +433,4 @@ CacheLogger::vtlog_error(struct timeval *t, const char *component, const char *f
   tlog_push_message(LL_ERROR, t, component, format, va);
 }
 
-} // end namespace llsfrb
+} // end namespace fawkes

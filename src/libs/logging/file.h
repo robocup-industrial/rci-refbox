@@ -29,7 +29,7 @@
 #include <cstdio>
 #include <ctime>
 
-namespace llsfrb {
+namespace fawkes {
 
 class Mutex;
 
@@ -82,6 +82,6 @@ class FileLogger : public Logger
 };
 
 
-} // end namespace llsfrb
+} // end namespace fawkes
 
 #endif

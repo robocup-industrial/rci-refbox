@@ -28,7 +28,7 @@
 #include <cstdarg>
 #include <sys/time.h>
 
-namespace llsfrb {
+namespace fawkes {
 
 
 class Logger
@@ -129,6 +129,6 @@ class Logger
 };
 
 
-} // end namespace llsfrb
+} // end namespace fawkes
 
 #endif

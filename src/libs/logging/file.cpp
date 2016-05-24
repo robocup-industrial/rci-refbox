@@ -33,7 +33,7 @@
 #include <fcntl.h>
 #include <cerrno>
 
-namespace llsfrb {
+namespace fawkes {
 
 /** @class FileLogger <logging/file.h>
  * Interface for logging to a specified file.
@@ -440,4 +440,4 @@ FileLogger::vtlog_error(struct timeval *t, const char *component, const char *fo
 }
 
 
-} // end namespace llsfrb
+} // end namespace fawkes

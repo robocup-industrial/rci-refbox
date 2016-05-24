@@ -33,7 +33,7 @@
 #include <cstdlib>
 #include <cstdio>
 
-namespace llsfrb {
+namespace fawkes {
 
 
 /** @class NetworkLogger <logging/network.h>
@@ -361,4 +361,4 @@ NetworkLogger::tlog_error(struct timeval *t, const char *component, fawkes::Exce
   }
 }
 
-} // end namespace llsfrb
+} // end namespace fawkes
